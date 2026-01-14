@@ -1,9 +1,22 @@
 import express from 'express';
 import cors from 'cors';
-import { projects, profile, skills, timeline, interests } from './data.js';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import { projects, profile, skills, timeline, interests, contactInfo } from './data.js';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Configure email transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
+});
 
 // Middleware
 app.use(cors());
@@ -34,6 +47,11 @@ app.get('/api/interests', (req, res) => {
   res.json(interests);
 });
 
+// Get contact information
+app.get('/api/contact-info', (req, res) => {
+  res.json(contactInfo);
+});
+
 // Get all projects
 app.get('/api/projects', (req, res) => {
   res.json(projects);
@@ -49,7 +67,7 @@ app.get('/api/projects/:id', (req, res) => {
 });
 
 // Contact form endpoint
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
 
   // Validation
@@ -63,17 +81,53 @@ app.post('/api/contact', (req, res) => {
     return res.status(400).json({ message: 'Invalid email format' });
   }
 
-  // In a real application, you would:
-  // 1. Store this in a database
-  // 2. Send an email notification
-  // 3. Use a service like SendGrid, Nodemailer, etc.
+  try {
+    // Email options
+    const mailOptions = {
+      from: `"${name}" <${process.env.GMAIL_USER}>`, // Display sender's name
+      to: process.env.GMAIL_USER, // Send to your own email
+      replyTo: email, // Set reply-to as the sender's email
+      subject: `Portfolio Contact: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
+            New Contact Form Submission
+          </h2>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
+            <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
+            <p style="margin: 10px 0;"><strong>Subject:</strong> ${subject}</p>
+          </div>
+          
+          <div style="margin: 20px 0;">
+            <h3 style="color: #333;">Message:</h3>
+            <p style="line-height: 1.6; color: #666; white-space: pre-wrap;">${message}</p>
+          </div>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px;">
+            <p>This email was sent from your portfolio website contact form.</p>
+          </div>
+        </div>
+      `
+    };
 
-  console.log('Contact form submission:', { name, email, subject, message });
+    // Send email
+    await transporter.sendMail(mailOptions);
 
-  res.status(200).json({
-    message: 'Message received successfully',
-    data: { name, email, subject }
-  });
+    console.log('Contact form submission:', { name, email, subject });
+
+    res.status(200).json({
+      message: 'Message received successfully',
+      data: { name, email, subject }
+    });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ 
+      message: 'Failed to send message. Please try again later.',
+      error: error.message 
+    });
+  }
 });
 
 // Start server

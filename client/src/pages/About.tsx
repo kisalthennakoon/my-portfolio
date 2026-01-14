@@ -34,9 +34,9 @@ const About = () => {
     const fetchData = async () => {
         try {
             const [profileRes, timelineRes, interestsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/profile'),
-                fetch('http://localhost:5000/api/timeline'),
-                fetch('http://localhost:5000/api/interests')
+                fetch('/api/profile'),
+                fetch('/api/timeline'),
+                fetch('/api/interests')
             ]);
 
             const profileData = await profileRes.json();

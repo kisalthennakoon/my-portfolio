@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import {
     Box,
     Container,
@@ -12,6 +12,7 @@ import {
     CardContent,
     Link as MuiLink,
     useTheme,
+    CircularProgress,
 } from '@mui/material';
 import { Email as EmailIcon, Phone as PhoneIcon, LocationOn as LocationIcon } from '@mui/icons-material';
 
@@ -20,6 +21,18 @@ interface FormData {
     email: string;
     subject: string;
     message: string;
+}
+
+interface SocialLink {
+    platform: string;
+    url: string;
+}
+
+interface ContactInfo {
+    email: string;
+    phone: string;
+    location: string;
+    social: SocialLink[];
 }
 
 const Contact = () => {
@@ -32,6 +45,35 @@ const Contact = () => {
     });
     const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchContactInfo();
+    }, []);
+
+    const fetchContactInfo = async () => {
+        try {
+            const response = await fetch('/api/contact-info');
+            const data = await response.json();
+            setContactInfo(data);
+        } catch (error) {
+            console.error('Error fetching contact info:', error);
+            // Fallback data
+            setContactInfo({
+                email: 'your.email@example.com',
+                phone: '+1 (123) 456-7890',
+                location: 'City, Country',
+                social: [
+                    { platform: 'GitHub', url: 'https://github.com/yourusername' },
+                    { platform: 'LinkedIn', url: 'https://linkedin.com/in/yourusername' },
+                    { platform: 'Twitter', url: 'https://twitter.com/yourusername' }
+                ]
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
@@ -46,7 +88,7 @@ const Contact = () => {
         setErrorMessage('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/contact', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -67,6 +109,14 @@ const Contact = () => {
             console.error('Error sending message:', error);
         }
     };
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                <CircularProgress size={60} sx={{ color: theme.palette.primary.main }} />
+            </Box>
+        );
+    }
 
     return (
         <Container maxWidth="lg" sx={{ py: 8 }}>
@@ -118,7 +168,7 @@ const Contact = () => {
                                         Email
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        your.email@example.com
+                                        {contactInfo?.email}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -142,7 +192,7 @@ const Contact = () => {
                                         Phone
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        +1 (123) 456-7890
+                                        {contactInfo?.phone}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -166,7 +216,7 @@ const Contact = () => {
                                         Location
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        City, Country
+                                        {contactInfo?.location}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -177,12 +227,12 @@ const Contact = () => {
                                 Connect With Me
                             </Typography>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                {['GitHub', 'LinkedIn', 'Twitter'].map((platform) => (
+                                {contactInfo?.social.map((social) => (
                                     <Button
-                                        key={platform}
+                                        key={social.platform}
                                         variant="outlined"
                                         size="small"
-                                        href={`https://${platform.toLowerCase()}.com/yourusername`}
+                                        href={social.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         sx={{
@@ -195,7 +245,7 @@ const Contact = () => {
                                             },
                                         }}
                                     >
-                                        {platform}
+                                        {social.platform}
                                     </Button>
                                 ))}
                             </Box>

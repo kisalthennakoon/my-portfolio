@@ -83,13 +83,33 @@ export const interests = [
   }
 ];
 
+export const contactInfo = {
+  email: 'kisaltennakoon@gmail.com',
+  phone: '+94 76 665 8382',
+  location: 'Colombo, Sri Lanka',
+  social: [
+    {
+      platform: 'GitHub',
+      url: 'https://github.com/kisalthennakoon'
+    },
+    {
+      platform: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/kisalthennakoon'
+    },
+    // {
+    //   platform: 'Twitter',
+    //   url: 'https://twitter.com/kisalthennakoon'
+    // }
+  ]
+};
+
 export const projects = [
   {
     id: 1,
     title: 'IntelliScript V3 (FYP)',
     description: 'A secure, AI-powered enterprise knowledge management system featuring Dual-RAG architecture and intelligent Role-Based Access Control (RBAC).',
     technologies: ['Python', 'FastAPI', 'React', 'LangChain', 'OpenAI', 'PostgreSQL'],
-    github: 'https://github.com/kisalthennakoon', // Placeholder based on CV username
+    github: '', // Placeholder based on CV username
     demo: '',
     image: ''
   },
@@ -98,7 +118,7 @@ export const projects = [
     title: 'Devix - Thermal Inspection System',
     description: 'Web-based solution to digitize transformer thermal inspections. Integrated a computer vision engine to detect temperature anomalies against baselines.',
     technologies: ['React', 'Spring Boot', 'PostgreSQL', 'Python', 'OpenCV'],
-    github: 'https://github.com/kisalthennakoon',
+    github: 'https://github.com/kisalthennakoon/Devix',
     demo: '',
     image: ''
   },
@@ -108,7 +128,7 @@ export const projects = [
     title: 'Facial Expression Detection',
     description: 'Computer vision system using Optical Flow to analyze dynamic facial changes. Extracts dense motion vectors to identify expressions based on temporal motion fields.',
     technologies: ['Python', 'OpenCV', 'TensorFlow', 'Keras', 'NumPy'],
-    github: 'https://github.com/kisalthennakoon/Facial-Expression-Change-Detection',
+    github: 'https://github.com/kisalthennakoon/Face-Expression-Change-Detection',
     demo: '',
     image: ''
   },
