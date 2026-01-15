@@ -10,9 +10,15 @@ import {
     Chip,
     Button,
     CircularProgress,
-    useTheme
+    useTheme,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    IconButton,
+    ImageList,
+    ImageListItem
 } from '@mui/material';
-import { GitHub as GitHubIcon, Launch as LaunchIcon } from '@mui/icons-material';
+import { GitHub as GitHubIcon, Launch as LaunchIcon, Close as CloseIcon } from '@mui/icons-material';
 
 interface Project {
     id: number;
@@ -22,16 +28,33 @@ interface Project {
     github?: string;
     demo?: string;
     image?: string;
+    imageData?: string;
+    category?: string;
+    contribution?: string;
+    about?: string;
+    photos?: string[];
 }
 
 const Projects = () => {
     const theme = useTheme();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         fetchProjects();
     }, []);
+
+    const handleProjectClick = (project: Project) => {
+        setSelectedProject(project);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedProject(null);
+    };
 
     const fetchProjects = async () => {
         try {
@@ -93,7 +116,7 @@ const Projects = () => {
                         backgroundClip: 'text',
                     }}
                 >
-                    My Projects
+                    Projects
                 </Typography>
                 <Typography variant="h6" color="text.secondary">
                     Here are some of the projects I've worked on
@@ -104,10 +127,12 @@ const Projects = () => {
                 {projects.map((project) => (
                     <Grid item xs={12} md={6} lg={4} key={project.id}>
                         <Card
+                            onClick={() => handleProjectClick(project)}
                             sx={{
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
+                                cursor: 'pointer',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                 '&:hover': {
                                     transform: 'translateY(-10px)',
@@ -115,11 +140,11 @@ const Projects = () => {
                                 },
                             }}
                         >
-                            {project.image ? (
+                            {project.imageData ? (
                                 <CardMedia
                                     component="img"
                                     height="200"
-                                    image={project.image}
+                                    image={project.imageData}
                                     alt={project.title}
                                 />
                             ) : (
@@ -144,7 +169,7 @@ const Projects = () => {
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2, flexGrow: 1 }}>
                                     {project.description}
                                 </Typography>
-                                <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                {/* <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                                     {project.technologies.map((tech, index) => (
                                         <Chip
                                             key={index}
@@ -157,9 +182,9 @@ const Projects = () => {
                                             }}
                                         />
                                     ))}
-                                </Box>
+                                </Box> */}
                                 <Box sx={{ display: 'flex', gap: 1 }}>
-                                    {project.github && (
+                                    {/* {project.github && (
                                         <Button
                                             variant="outlined"
                                             size="small"
@@ -179,7 +204,7 @@ const Projects = () => {
                                         >
                                             GitHub
                                         </Button>
-                                    )}
+                                    )} */}
                                     {project.demo && (
                                         <Button
                                             variant="contained"
@@ -205,6 +230,171 @@ const Projects = () => {
                     </Grid>
                 ))}
             </Grid>
+
+            {/* Project Details Dialog */}
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                maxWidth="md"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: 2,
+                        maxHeight: '90vh'
+                    }
+                }}
+            >
+                {selectedProject && (
+                    <>
+                        <DialogTitle sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                            color: theme.palette.primary.contrastText,
+                            pb: 2
+                        }}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                                {selectedProject.title}
+                            </Typography>
+                            <IconButton
+                                edge="end"
+                                color="inherit"
+                                onClick={handleCloseDialog}
+                                aria-label="close"
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </DialogTitle>
+                        <DialogContent sx={{ pt: 3 }}>
+                            {/* Category */}
+                            {selectedProject.category && (
+                                <Box sx={{ mb: 3, marginTop: 2 }}>
+                                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                        Category
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ lineHeight: 1.7 }}>
+                                        {selectedProject.category}
+                                    </Typography>
+                                </Box>
+                            )}
+
+                            {/* About */}
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                    About
+                                </Typography>
+                                <Typography variant="body1" sx={{ lineHeight: 1.7 }}>
+                                    {selectedProject.about}
+                                </Typography>
+                            </Box>
+
+                
+
+                            {/* My Contribution */}
+                            {selectedProject.contribution && (
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                        My Contribution
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ lineHeight: 1.7 }}>
+                                        {selectedProject.contribution}
+                                    </Typography>
+                                </Box>
+                            )}
+
+                            {/* Technologies */}
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                    Technologies Used
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                    {selectedProject.technologies.map((tech, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={tech}
+                                            size="small"
+                                            sx={{
+                                                backgroundColor: theme.palette.background.default,
+                                                color: theme.palette.primary.main,
+                                                fontWeight: 600,
+                                            }}
+                                        />
+                                    ))}
+                                </Box>
+                            </Box>
+
+                            {/* Sample Photos */}
+                            {selectedProject.photos && selectedProject.photos.length > 0 && (
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
+                                        Sample Photos
+                                    </Typography>
+                                    <ImageList cols={2} gap={8} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                                        {selectedProject.photos.map((photo, index) => (
+                                            <ImageListItem key={index}>
+                                                <img
+                                                    src={photo}
+                                                    alt={`${selectedProject.title} screenshot ${index + 1}`}
+                                                    loading="lazy"
+                                                    style={{
+                                                        borderRadius: '8px',
+                                                        objectFit: 'cover',
+                                                        width: '100%',
+                                                        height: '200px'
+                                                    }}
+                                                />
+                                            </ImageListItem>
+                                        ))}
+                                    </ImageList>
+                                </Box>
+                            )}
+
+                            {/* Action Buttons */}
+                            <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
+                                {selectedProject.github && (
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<GitHubIcon />}
+                                        href={selectedProject.github}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        sx={{
+                                            borderColor: theme.palette.primary.main,
+                                            color: theme.palette.primary.main,
+                                            '&:hover': {
+                                                borderColor: theme.palette.primary.main,
+                                                backgroundColor: theme.palette.primary.main,
+                                                color: theme.palette.primary.contrastText,
+                                            },
+                                        }}
+                                    >
+                                        View on GitHub
+                                    </Button>
+                                )}
+                                {selectedProject.demo && (
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<LaunchIcon />}
+                                        href={selectedProject.demo}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        sx={{
+                                            background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                                            color: theme.palette.primary.contrastText,
+                                            '&:hover': {
+                                                opacity: 0.9,
+                                            },
+                                        }}
+                                    >
+                                        Live Demo
+                                    </Button>
+                                )}
+                            </Box>
+                        </DialogContent>
+                    </>
+                )}
+            </Dialog>
         </Container>
     );
 };

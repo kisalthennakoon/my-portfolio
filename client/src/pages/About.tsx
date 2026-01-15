@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Grid, Card, CardContent, Paper, useTheme, CircularProgress } from '@mui/material';
-import meImage from '../assets/me.jpeg';
+
 
 interface Profile {
     aboutTitle: string;
     aboutParagraphs: string[];
+    imageData: string;
 }
 
 interface TimelineItem {
@@ -55,7 +56,8 @@ const About = () => {
                     'I\'m a passionate developer with a strong interest in creating innovative web applications.',
                     'I enjoy working on both frontend and backend technologies.',
                     'When I\'m not coding, you can find me reading tech blogs.'
-                ]
+                ],
+                imageData: ''
             });
             setTimeline([]);
             setInterests([]);
@@ -125,7 +127,7 @@ const About = () => {
                             }}
                         >
                             <img
-                                src={meImage}
+                                src={profile?.imageData}
                                 alt="Kisal"
                                 style={{
                                     width: '100%',
@@ -205,9 +207,9 @@ const About = () => {
             {/* Interests & Hobbies */}
             <Box>
                 <Typography variant="h3" align="center" sx={{ mb: 6, fontWeight: 'bold' }}>
-                    Interests & Hobbies
+                    Interests
                 </Typography>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} justifyContent="center">
                     {(interests.length > 0 ? interests : [
                         { icon: '💻', title: 'Coding', description: 'Building projects and exploring new technologies' },
                         { icon: '📚', title: 'Learning', description: 'Reading tech articles and taking online courses' },

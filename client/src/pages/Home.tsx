@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Button, Grid, Card, CardContent, useTheme, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
-import meImage from '../assets/me.jpeg';
 
 interface Profile {
     name: string;
     title: string;
     bio: string;
+    imageData: string;
 }
 
 interface Skill {
@@ -42,7 +42,8 @@ const Home = () => {
             setProfile({
                 name: 'Kisal',
                 title: 'Undergraduate',
-                bio: 'I create beautiful and functional web applications that solve real-world problems. Passionate about clean code, user experience, and continuous learning.'
+                bio: 'I create beautiful and functional web applications that solve real-world problems. Passionate about clean code, user experience, and continuous learning.',
+                imageData: ''
             });
             setSkills([
                 { title: 'Frontend', skills: 'React, TypeScript, HTML5, CSS3, Tailwind' },
@@ -172,7 +173,7 @@ const Home = () => {
                             }}
                         >
                             <img
-                                src={meImage}
+                                src={profile?.imageData}
                                 alt="Kisal"
                                 style={{
                                     width: '100%',

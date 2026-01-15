@@ -2,7 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { projects, profile, skills, timeline, interests, contactInfo } from './data.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -21,6 +27,8 @@ const transporter = nodemailer.createTransport({
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Serve static files (images) from the 'public' directory
+app.use('/uploads', express.static('public/images'));
 
 // Routes
 app.get('/', (req, res) => {
@@ -29,7 +37,28 @@ app.get('/', (req, res) => {
 
 // Get profile information
 app.get('/api/profile', (req, res) => {
-  res.json(profile);
+  if (profile.image) {
+      const imagePath = path.join(__dirname, 'public', 'images', path.basename(profile.image));
+      
+      if (fs.existsSync(imagePath)) {
+        const imageBuffer = fs.readFileSync(imagePath);
+        const base64Image = imageBuffer.toString('base64');
+        const ext = path.extname(imagePath).toLowerCase();
+        
+        let mimeType = 'image/jpeg';
+        if (ext === '.png') mimeType = 'image/png';
+        else if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
+        else if (ext === '.webp') mimeType = 'image/webp';
+        else if (ext === '.gif') mimeType = 'image/gif';
+        
+        return res.json({
+          ...profile,
+          imageData: `data:${mimeType};base64,${base64Image}`
+        });
+      }
+    }
+    
+    res.json(profile);
 });
 
 // Get skills
@@ -52,18 +81,75 @@ app.get('/api/contact-info', (req, res) => {
   res.json(contactInfo);
 });
 
-// Get all projects
+// Get all projects with images as base64
 app.get('/api/projects', (req, res) => {
-  res.json(projects);
+  try {
+    const projectsWithImages = projects.map(project => {
+      if (project.image) {
+        const imagePath = path.join(__dirname, 'public', 'images', path.basename(project.image));
+        
+        if (fs.existsSync(imagePath)) {
+          const imageBuffer = fs.readFileSync(imagePath);
+          const base64Image = imageBuffer.toString('base64');
+          const ext = path.extname(imagePath).toLowerCase();
+          
+          // Determine MIME type
+          let mimeType = 'image/jpeg';
+          if (ext === '.png') mimeType = 'image/png';
+          else if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
+          else if (ext === '.webp') mimeType = 'image/webp';
+          else if (ext === '.gif') mimeType = 'image/gif';
+          
+          return {
+            ...project,
+            imageData: `data:${mimeType};base64,${base64Image}`
+          };
+        }
+      }
+      return project;
+    });
+    
+    res.json(projectsWithImages);
+  } catch (error) {
+    console.error('Error reading project images:', error);
+    res.status(500).json({ message: 'Error loading projects', error: error.message });
+  }
 });
 
-// Get single project by id
+// Get single project by id with image as base64
 app.get('/api/projects/:id', (req, res) => {
-  const project = projects.find(p => p.id === parseInt(req.params.id));
-  if (!project) {
-    return res.status(404).json({ message: 'Project not found' });
+  try {
+    const project = projects.find(p => p.id === parseInt(req.params.id));
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    
+    if (project.image) {
+      const imagePath = path.join(__dirname, 'public', 'images', path.basename(project.image));
+      
+      if (fs.existsSync(imagePath)) {
+        const imageBuffer = fs.readFileSync(imagePath);
+        const base64Image = imageBuffer.toString('base64');
+        const ext = path.extname(imagePath).toLowerCase();
+        
+        let mimeType = 'image/jpeg';
+        if (ext === '.png') mimeType = 'image/png';
+        else if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
+        else if (ext === '.webp') mimeType = 'image/webp';
+        else if (ext === '.gif') mimeType = 'image/gif';
+        
+        return res.json({
+          ...project,
+          imageData: `data:${mimeType};base64,${base64Image}`
+        });
+      }
+    }
+    
+    res.json(project);
+  } catch (error) {
+    console.error('Error reading project image:', error);
+    res.status(500).json({ message: 'Error loading project', error: error.message });
   }
-  res.json(project);
 });
 
 // Contact form endpoint
