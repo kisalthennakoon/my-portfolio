@@ -73,17 +73,17 @@ const Home = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        minHeight: '80vh',
-                        py: 8,
-                        gap: 4,
+                        minHeight: { xs: 'auto', md: '80vh' },
+                        py: { xs: 4, md: 8 },
+                        gap: { xs: 3, md: 4 },
                         flexDirection: { xs: 'column', md: 'row' },
                     }}
                 >
-                    <Box sx={{ flex: 1, maxWidth: 600 }}>
+                    <Box sx={{ flex: 1, maxWidth: 600, textAlign: { xs: 'center', md: 'left' } }}>
                         <Typography
                             variant="h2"
                             sx={{
-                                fontSize: { xs: '2.5rem', md: '3.5rem' },
+                                fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                                 mb: 2,
                                 fontWeight: 'bold',
                                 lineHeight: 1.2,
@@ -102,13 +102,28 @@ const Home = () => {
                                 {profile?.name}
                             </Box>
                         </Typography>
-                        <Typography variant="h4" color="text.secondary" sx={{ mb: 3 }}>
+                        <Typography
+                            variant="h4"
+                            color="text.secondary"
+                            sx={{
+                                mb: 3,
+                                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
+                            }}
+                        >
                             {profile?.title}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.8 }}>
+                        <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            sx={{
+                                mb: 4,
+                                lineHeight: 1.8,
+                                fontSize: { xs: '0.95rem', md: '1rem' },
+                            }}
+                        >
                             {profile?.bio}
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: { xs: 'center', md: 'flex-start' } }}>
                             <Button
                                 component={Link}
                                 to="/projects"
@@ -117,8 +132,9 @@ const Home = () => {
                                 sx={{
                                     background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                                     color: theme.palette.primary.contrastText,
-                                    px: 4,
+                                    px: { xs: 3, md: 4 },
                                     py: 1.5,
+                                    fontSize: { xs: '0.9rem', md: '1rem' },
                                     '&:hover': {
                                         transform: 'translateY(-2px)',
                                         boxShadow: `0 10px 20px ${theme.palette.primary.main}66`,
@@ -135,9 +151,10 @@ const Home = () => {
                                 sx={{
                                     borderColor: theme.palette.primary.main,
                                     color: theme.palette.primary.main,
-                                    px: 4,
+                                    px: { xs: 3, md: 4 },
                                     py: 1.5,
                                     borderWidth: 2,
+                                    fontSize: { xs: '0.9rem', md: '1rem' },
                                     '&:hover': {
                                         borderWidth: 2,
                                         backgroundColor: theme.palette.primary.main,
@@ -160,8 +177,8 @@ const Home = () => {
                     >
                         <Box
                             sx={{
-                                width: 300,
-                                height: 300,
+                                width: { xs: 200, sm: 250, md: 300 },
+                                height: { xs: 200, sm: 250, md: 300 },
                                 borderRadius: '50%',
                                 overflow: 'hidden',
                                 boxShadow: `0 20px 40px ${theme.palette.primary.main}4d`,
@@ -187,12 +204,20 @@ const Home = () => {
             </Container>
 
             {/* Skills Section */}
-            <Box sx={{ backgroundColor: 'primary.main', py: 8 }}>
+            <Box sx={{ backgroundColor: 'primary.main', py: { xs: 4, md: 8 } }}>
                 <Container maxWidth="lg">
-                    <Typography variant="h3" align="center" sx={{ mb: 6, fontWeight: 'bold' }}>
+                    <Typography
+                        variant="h3"
+                        align="center"
+                        sx={{
+                            mb: { xs: 4, md: 6 },
+                            fontWeight: 'bold',
+                            fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                        }}
+                    >
                         Skills & Technologies
                     </Typography>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={{ xs: 2, md: 3 }}>
                         {skills.map((skill, index) => (
                             <Grid item xs={12} sm={6} md={3} key={index}>
                                 <Card

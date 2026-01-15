@@ -119,14 +119,15 @@ const Contact = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
             {/* Header */}
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
                 <Typography
                     variant="h2"
                     sx={{
                         mb: 2,
                         fontWeight: 'bold',
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                         background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -135,16 +136,30 @@ const Contact = () => {
                 >
                     Get In Touch
                 </Typography>
-                <Typography variant="h6" color="text.secondary">
+                <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{
+                        fontSize: { xs: '0.95rem', md: '1.25rem' },
+                        px: { xs: 2, md: 0 },
+                    }}
+                >
                     Feel free to reach out to me for any inquiries or opportunities
                 </Typography>
             </Box>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={{ xs: 3, md: 4 }}>
                 {/* Contact Info */}
                 <Grid item xs={12} md={4}>
-                    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
-                        <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
+                    <Paper elevation={3} sx={{ p: { xs: 2, md: 3 }, height: '100%' }}>
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                mb: 3,
+                                fontWeight: 'bold',
+                                fontSize: { xs: '1.25rem', md: '1.5rem' },
+                            }}
+                        >
                             Contact Information
                         </Typography>
 
@@ -255,7 +270,7 @@ const Contact = () => {
 
                 {/* Contact Form */}
                 <Grid item xs={12} md={8}>
-                    <Paper elevation={3} sx={{ p: 4 }}>
+                    <Paper elevation={3} sx={{ p: { xs: 2, md: 4 } }}>
                         <Box component="form" onSubmit={handleSubmit}>
                             <TextField
                                 fullWidth

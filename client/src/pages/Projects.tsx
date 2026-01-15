@@ -11,6 +11,7 @@ import {
     Button,
     CircularProgress,
     useTheme,
+    useMediaQuery,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -37,6 +38,7 @@ interface Project {
 
 const Projects = () => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -103,13 +105,14 @@ const Projects = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 8 }}>
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
                 <Typography
                     variant="h2"
                     sx={{
                         mb: 2,
                         fontWeight: 'bold',
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                         background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -118,12 +121,18 @@ const Projects = () => {
                 >
                     Projects
                 </Typography>
-                <Typography variant="h6" color="text.secondary">
+                <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{
+                        fontSize: { xs: '1rem', md: '1.25rem' },
+                    }}
+                >
                     Here are some of the projects I've worked on
                 </Typography>
             </Box>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={{ xs: 2, md: 4 }}>
                 {projects.map((project) => (
                     <Grid item xs={12} md={6} lg={4} key={project.id}>
                         <Card
@@ -237,10 +246,12 @@ const Projects = () => {
                 onClose={handleCloseDialog}
                 maxWidth="md"
                 fullWidth
+                fullScreen={isMobile}
                 PaperProps={{
                     sx: {
-                        borderRadius: 2,
-                        maxHeight: '90vh'
+                        borderRadius: { xs: 0, md: 2 },
+                        maxHeight: '90vh',
+                        m: { xs: 0, md: 2 },
                     }
                 }}
             >
@@ -289,7 +300,7 @@ const Projects = () => {
                                 </Typography>
                             </Box>
 
-                
+
 
                             {/* My Contribution */}
                             {selectedProject.contribution && (
@@ -330,7 +341,7 @@ const Projects = () => {
                                     <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, fontWeight: 'bold' }}>
                                         Sample Photos
                                     </Typography>
-                                    <ImageList cols={2} gap={8} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <ImageList cols={isMobile ? 1 : 2} gap={8} sx={{ borderRadius: 2, overflow: 'hidden' }}>
                                         {selectedProject.photos.map((photo, index) => (
                                             <ImageListItem key={index}>
                                                 <img

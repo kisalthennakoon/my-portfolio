@@ -75,14 +75,15 @@ const About = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
             {/* Header */}
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
                 <Typography
                     variant="h2"
                     sx={{
                         mb: 2,
                         fontWeight: 'bold',
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                         background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -91,18 +92,24 @@ const About = () => {
                 >
                     About Me
                 </Typography>
-                <Typography variant="h6" color="text.secondary">
+                <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{
+                        fontSize: { xs: '1rem', md: '1.25rem' },
+                    }}
+                >
                     Get to know me better
                 </Typography>
             </Box>
 
             {/* About Content */}
-            <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', mb: 8, flexDirection: { xs: 'column', md: 'row' } }}>
+            <Box sx={{ display: 'flex', gap: { xs: 3, md: 4 }, alignItems: 'center', mb: { xs: 6, md: 8 }, flexDirection: { xs: 'column', md: 'row' } }}>
                 <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                     <Box
                         sx={{
-                            width: 300,
-                            height: 300,
+                            width: { xs: 200, sm: 250, md: 300 },
+                            height: { xs: 200, sm: 250, md: 300 },
                             borderRadius: 4,
                             overflow: 'hidden',
                             boxShadow: `0 20px 40px ${theme.palette.primary.main}4D`,
@@ -139,12 +146,28 @@ const About = () => {
                     </Box>
                 </Box>
 
-                <Box sx={{ flex: 1 }}>
-                    <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
+                <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            mb: 3,
+                            fontWeight: 'bold',
+                            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem' },
+                        }}
+                    >
                         {profile?.aboutTitle}
                     </Typography>
                     {profile?.aboutParagraphs.map((paragraph, index) => (
-                        <Typography key={index} variant="body1" color="text.secondary" sx={{ mb: 2, lineHeight: 1.8 }}>
+                        <Typography
+                            key={index}
+                            variant="body1"
+                            color="text.secondary"
+                            sx={{
+                                mb: 2,
+                                lineHeight: 1.8,
+                                fontSize: { xs: '0.95rem', md: '1rem' },
+                            }}
+                        >
                             {paragraph}
                         </Typography>
                     ))}
@@ -152,11 +175,19 @@ const About = () => {
             </Box>
 
             {/* Experience & Education */}
-            <Box sx={{ mb: 8 }}>
-                <Typography variant="h3" align="center" sx={{ mb: 6, fontWeight: 'bold' }}>
+            <Box sx={{ mb: { xs: 6, md: 8 } }}>
+                <Typography
+                    variant="h3"
+                    align="center"
+                    sx={{
+                        mb: { xs: 4, md: 6 },
+                        fontWeight: 'bold',
+                        fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                    }}
+                >
                     Experience & Education
                 </Typography>
-                <Box sx={{ position: 'relative', pl: { xs: 4, md: 6 } }}>
+                <Box sx={{ position: 'relative', pl: { xs: 3, md: 6 } }}>
                     {/* Timeline line */}
                     <Box
                         sx={{
@@ -170,32 +201,61 @@ const About = () => {
                     />
 
                     {timeline.length > 0 ? timeline.map((item, index) => (
-                        <Box key={index} sx={{ position: 'relative', mb: 4 }}>
+                        <Box key={index} sx={{ position: 'relative', mb: { xs: 3, md: 4 } }}>
                             {/* Timeline dot */}
                             <Box
                                 sx={{
                                     position: 'absolute',
-                                    left: -26,
+                                    left: { xs: -20, md: -26 },
                                     top: 20,
-                                    width: 12,
-                                    height: 12,
+                                    width: { xs: 10, md: 12 },
+                                    height: { xs: 10, md: 12 },
                                     borderRadius: '50%',
                                     backgroundColor: theme.palette.primary.main,
                                     border: `3px solid ${theme.palette.background.paper}`,
                                     boxShadow: `0 0 0 3px ${theme.palette.primary.main}`,
                                 }}
                             />
-                            <Paper elevation={2} sx={{ p: 3 }}>
-                                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+                            <Paper elevation={2} sx={{ p: { xs: 2, md: 3 } }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        mb: 1,
+                                        fontSize: { xs: '1.25rem', md: '1.5rem' },
+                                    }}
+                                >
                                     {item.title}
                                 </Typography>
-                                <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 1 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        color: theme.palette.primary.main,
+                                        mb: 1,
+                                        fontSize: { xs: '1.1rem', md: '1.25rem' },
+                                    }}
+                                >
                                     {item.company}
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic', mb: 2 }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontStyle: 'italic',
+                                        mb: 2,
+                                        fontSize: { xs: '0.85rem', md: '0.875rem' },
+                                    }}
+                                >
                                     {item.date}
                                 </Typography>
-                                <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                                <Typography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    sx={{
+                                        lineHeight: 1.6,
+                                        fontSize: { xs: '0.95rem', md: '1rem' },
+                                    }}
+                                >
                                     {item.description}
                                 </Typography>
                             </Paper>
@@ -206,10 +266,18 @@ const About = () => {
 
             {/* Interests & Hobbies */}
             <Box>
-                <Typography variant="h3" align="center" sx={{ mb: 6, fontWeight: 'bold' }}>
+                <Typography
+                    variant="h3"
+                    align="center"
+                    sx={{
+                        mb: { xs: 4, md: 6 },
+                        fontWeight: 'bold',
+                        fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                    }}
+                >
                     Interests
                 </Typography>
-                <Grid container spacing={3} justifyContent="center">
+                <Grid container spacing={{ xs: 2, md: 3 }} justifyContent="center">
                     {(interests.length > 0 ? interests : [
                         { icon: '💻', title: 'Coding', description: 'Building projects and exploring new technologies' },
                         { icon: '📚', title: 'Learning', description: 'Reading tech articles and taking online courses' },
