@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import {
     Box,
     Container,
@@ -8,9 +9,6 @@ import {
     TextField,
     Button,
     Alert,
-    Card,
-    CardContent,
-    Link as MuiLink,
     useTheme,
     CircularProgress,
 } from '@mui/material';
