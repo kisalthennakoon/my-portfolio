@@ -177,7 +177,7 @@ app.post('/api/contact', async (req, res) => {
     const data = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
       to: process.env.RECIPIENT_EMAIL || process.env.RESEND_FROM_EMAIL,
-      replyTo: email,
+      // replyTo: email,
       subject: `Portfolio Contact: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
