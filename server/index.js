@@ -15,12 +15,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Configure email transporter
+// Configure email transporter with extended timeouts for Render
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASSWORD
+  },
+  // Increased timeouts for free tier hosting
+  connectionTimeout: 30000, // 30 seconds
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
+  // Additional options for better reliability
+  pool: true,
+  maxConnections: 1,
+  maxMessages: 3,
+  rateDelta: 1000,
+  rateLimit: 1
+});
+
+// Verify transporter configuration on startup
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('❌ Email transporter verification failed:', error);
+  } else {
+    console.log('✅ Email server is ready to send messages');
   }
 });
 
@@ -168,6 +187,9 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
+    // Log attempt for debugging
+    console.log('Attempting to send email from:', email);
+    
     // Email options
     const mailOptions = {
       from: `"${name}" <${process.env.GMAIL_USER}>`, // Display sender's name
@@ -198,20 +220,46 @@ app.post('/api/contact', async (req, res) => {
       `
     };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+    // Send email with timeout handling
+    const sendEmailWithTimeout = () => {
+      return Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email sending timeout after 25s')), 25000)
+        )
+      ]);
+    };
 
-    console.log('Contact form submission:', { name, email, subject });
+    await sendEmailWithTimeout();
+
+    console.log('✅ Contact form submission successful:', { name, email, subject });
 
     res.status(200).json({
       message: 'Message received successfully',
       data: { name, email, subject }
     });
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ 
-      message: 'Failed to send message. Please try again later.',
-      error: error.message 
+    console.error('❌ Error sending email:', error.message, error.code);
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to send message. Please try again later.';
+    let statusCode = 500;
+    
+    if (error.code === 'EAUTH') {
+      errorMessage = 'Email authentication failed. Please contact the administrator.';
+      console.error('Auth error - Check GMAIL_USER and GMAIL_APP_PASSWORD env variables');
+    } else if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKET' || error.message.includes('timeout')) {
+      errorMessage = 'Email service connection timeout. This is common on free hosting. Please try again.';
+      statusCode = 503; // Service Unavailable
+      console.error('Timeout error - Consider using SendGrid or Resend instead of Gmail');
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = 'Cannot connect to email service. Please try again later.';
+      statusCode = 503;
+    }
+    
+    res.status(statusCode).json({ 
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined 
     });
   }
 });
