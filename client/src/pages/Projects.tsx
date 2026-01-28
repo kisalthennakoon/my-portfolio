@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
     Box,
     Container,
@@ -60,9 +61,8 @@ const Projects = () => {
 
     const fetchProjects = async () => {
         try {
-            const response = await fetch('/api/projects');
-            const data = await response.json();
-            setProjects(data);
+            const response = await axios.get('/api/projects');
+            setProjects(response.data);
         } catch (error) {
             console.error('Error fetching projects:', error);
             // Fallback to local data if backend is not available

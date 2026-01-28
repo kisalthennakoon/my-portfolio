@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Box, Container, Typography, Grid, Card, CardContent, Paper, useTheme, CircularProgress } from '@mui/material';
 
 
@@ -35,18 +36,14 @@ const About = () => {
     const fetchData = async () => {
         try {
             const [profileRes, timelineRes, interestsRes] = await Promise.all([
-                fetch('/api/profile'),
-                fetch('/api/timeline'),
-                fetch('/api/interests')
+                axios.get('/api/profile'),
+                axios.get('/api/timeline'),
+                axios.get('/api/interests')
             ]);
 
-            const profileData = await profileRes.json();
-            const timelineData = await timelineRes.json();
-            const interestsData = await interestsRes.json();
-
-            setProfile(profileData);
-            setTimeline(timelineData);
-            setInterests(interestsData);
+            setProfile(profileRes.data);
+            setTimeline(timelineRes.data);
+            setInterests(interestsRes.data);
         } catch (error) {
             console.error('Error fetching data:', error);
             // Fallback data

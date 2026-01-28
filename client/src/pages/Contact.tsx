@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
+import axios from 'axios';
 import {
     Box,
     Container,
@@ -52,9 +53,8 @@ const Contact = () => {
 
     const fetchContactInfo = async () => {
         try {
-            const response = await fetch('/api/contact-info');
-            const data = await response.json();
-            setContactInfo(data);
+            const response = await axios.get('/api/contact-info');
+            setContactInfo(response.data);
         } catch (error) {
             console.error('Error fetching contact info:', error);
             // Fallback data
@@ -86,17 +86,7 @@ const Contact = () => {
         setErrorMessage('');
 
         try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to send message');
-            }
+            await axios.post('/api/contact', formData);
 
             setStatus('success');
             setFormData({ name: '', email: '', subject: '', message: '' });

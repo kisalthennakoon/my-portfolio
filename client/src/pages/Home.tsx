@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Box, Container, Typography, Button, Grid, Card, CardContent, useTheme, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -27,15 +28,12 @@ const Home = () => {
     const fetchData = async () => {
         try {
             const [profileRes, skillsRes] = await Promise.all([
-                fetch('/api/profile'),
-                fetch('/api/skills')
+                axios.get('/api/profile'),
+                axios.get('/api/skills')
             ]);
 
-            const profileData = await profileRes.json();
-            const skillsData = await skillsRes.json();
-
-            setProfile(profileData);
-            setSkills(skillsData);
+            setProfile(profileRes.data);
+            setSkills(skillsRes.data);
         } catch (error) {
             console.error('Error fetching data:', error);
             // Fallback data
